@@ -2,28 +2,48 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Hydrograph</title>
+	<title>FlowTime</title>
 	<link rel="stylesheet" href="css/style.css">
+	<link href='https://fonts.googleapis.com/css?family=Hind+Siliguri' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
+	<link href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
+
 </head>
 <body>
 	<header>
-		<h2>Local Streamflow</h2>
+		<div id="flowTime">
+			<h1>FlowTime</h1>
+			<h1>Share your local streams</h1>
+		</div>
 	</header>
 
 	<div class="main">
+		<i class="fa fa-angle-left" id="letArrow" aria-hidden="true"></i>
 		<div class="content">
-			<div class="graph">
+			<div class="graph active">
+				<svg></svg>
 			</div>
 			<div class="social">
-			
+				<i class="fa fa-cloud-download" aria-hidden="true"></i>
+				<i class="fa fa-instagram" aria-hidden="true"></i>
+				<i class="fa fa-twitter" aria-hidden="true"></i>
 			</div>
 		</div>
+		<i class="fa fa-angle-right" id="rightArrow" aria-hidden="true"></i>
 	</div>
 
 	<footer>
+		<div class="main">
+			<h1>Learn More</h1>
+		</div>
+		<div class="hidden" id="learnMore">
+			<p>Data are from USGS</p>
+		</div>
 	</footer>
 
 	<script src="http://code.jquery.com/jquery.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.js"></script>
 	<script src="js/script.js"></script>
 </body>
 </html>
