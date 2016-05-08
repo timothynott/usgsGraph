@@ -26,14 +26,12 @@ body{
 
 .content{
 	width: 100%;
-	border: 1px solid black;
+	border: 1px solid #0F5498;
 	max-width: 700px;
+	background: #eee;
 }
-
-svg{
-	display: block;
-	height: 400px;
-	width: 100%;
+.graph{
+	text-align: center;
 }
 
 .social{

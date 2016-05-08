@@ -1,17 +1,17 @@
 $(document).ready(function(){
-	
 nv.addGraph(function() {
   var chart = nv.models.lineChart()
-                .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                .margin({left: 100, right: 50})  //Adjust chart margins to give the x-axis some breathing room.
                 .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
               
-                .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                .showLegend(false)       //Show the legend, allowing users to turn on/off line series.
                 .showYAxis(true)        //Show the y-axis
                 .showXAxis(true)        //Show the x-axis
   ;
 
   chart.xAxis     //Chart x-axis settings
       .axisLabel('Time (HH:MM)')
+     
       .tickFormat(d3.format(',r'));
 
   chart.yAxis     //Chart y-axis settings
@@ -21,7 +21,7 @@ nv.addGraph(function() {
   /* Done setting the chart up? Time to render it!*/
   var myData = sinAndCos();   //You need data...
 
-  d3.select('.active svg')    //Select the <svg> element you want to render the chart in.   
+  d3.select('svg')    //Select the <svg> element you want to render the chart in.   
       .datum(myData)         //Populate the <svg> element with chart data...
       .call(chart);          //Finally, render the chart!
 
@@ -48,9 +48,9 @@ function sinAndCos() {
     {
       values: sin,      //values - represents the array of {x,y} data points
       key: 'Sine Wave', //key  - the name of the series.
-      color: '#ff7f0e'  //color - optional: choose your own line color.
+      color: '#0F5498'  //color - optional: choose your own line color.
     },
-    {
+    /*{
       values: cos,
       key: 'Cosine Wave',
       color: '#2ca02c'
@@ -60,7 +60,8 @@ function sinAndCos() {
       key: 'Another sine wave',
       color: '#7777ff',
       area: true      //area - set to true if you want this line to turn into a filled area chart.
-    }
+    }*/
   ];
 }
+
 });

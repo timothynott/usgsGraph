@@ -1,21 +1,19 @@
-
-var nv.addGraph = function(){
-  console.log("ok");
+nv.addGraph(function() {
   var chart = nv.models.lineChart()
                 .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
                 .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                .transitionDuration(350)  //how fast do you want the lines to transition?
+              
                 .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
                 .showYAxis(true)        //Show the y-axis
                 .showXAxis(true)        //Show the x-axis
   ;
 
   chart.xAxis     //Chart x-axis settings
-      .axisLabel('Time (ms)')
+      .axisLabel('Time (HH:MM)')
       .tickFormat(d3.format(',r'));
 
   chart.yAxis     //Chart y-axis settings
-      .axisLabel('Voltage (v)')
+      .axisLabel('Flow (cfs)')
       .tickFormat(d3.format('.02f'));
 
   /* Done setting the chart up? Time to render it!*/
@@ -28,11 +26,11 @@ var nv.addGraph = function(){
   //Update the chart when window resizes.
   nv.utils.windowResize(function() { chart.update() });
   return chart;
-};
+});
 /**************************************
  * Simple test data generator
  */
-var sinAndCos = function() {
+function sinAndCos() {
   var sin = [],sin2 = [],
       cos = [];
 
