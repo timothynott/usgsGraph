@@ -45,6 +45,10 @@ body{
 	margin: 0;
 }
 
+svg{
+	display: block;
+}
+
 .social{
 	display: flex;
 	font-size: 40px;
