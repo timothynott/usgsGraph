@@ -18,7 +18,7 @@ var flowSeries = {
 		scales:{
 			xAxes: [{
 				type: "time",
-				gridLines.display: false,
+				//gridLines.display: false,
 				ticks.display: true
 			}],
 			time: {
