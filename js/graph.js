@@ -1,5 +1,5 @@
 var histogram = document.getElementById('buyers').getContext('2d');
-new Chart(histogram).Line(myData);
+new Chart(histogram).Line(flowSeries);
 
 /*var myLineChart = new Chart(ctx, {
     type: 'line',
