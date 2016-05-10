@@ -144,6 +144,9 @@ $(document).ready(function(){
   });*/
   getData();
   showData();
+  var histogram = document.getElementById('buyers').getContext('2d');
+new Chart(histogram).Line(flowSeries);
+
 });
 
 	//*************************************
