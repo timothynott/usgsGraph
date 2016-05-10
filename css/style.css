@@ -41,7 +41,7 @@ body{
 .graph{
 	text-align: center;
 }
-.graph h4{
+.graph h4, .graph h5{
 	margin: 0;
 }
 

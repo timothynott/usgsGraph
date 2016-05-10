@@ -1,4 +1,6 @@
+
 var flowSeries = [];
+var gageName = "";
 var getData = function(){
 
 	var request = {
@@ -26,7 +28,8 @@ var getData = function(){
 			/*var insperation = showInspiration(item);
 			$(".results").append(insperation);*/
 		});
-		console.log(flowSeries);
+    gageName = timeSeries.sourceInfo.siteName;
+    console.log(gageName);
 		console.log(typeof(flowSeries[0].x));
 	})
 	.fail(function(jqXHR, error){
@@ -43,6 +46,10 @@ var getData = function(){
   		];
 };
 
+var showData = function(gageName){
+  console.log(gageName);
+  $(".content>.graph>h4").text(gageName);
+};
 ///////////////////////////////ON LOAD////////////////////////////////
 $(document).ready(function(){
 
@@ -82,6 +89,7 @@ $(document).ready(function(){
   		nv.utils.windowResize(function() { chart.update() });
   	return chart;
   });
+  showData();
 });
 
 	//*************************************
