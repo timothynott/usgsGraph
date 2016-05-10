@@ -20,11 +20,14 @@ var getData = function(){
 		$(".search-results").html(searchResults);*/
 		//myData = [result.timeSeries[3].values.dateTime,result.timeSeries[3].values.children().text()];
 		$.each(timeSeries.values[0].value, function(i, value){
-			flowSeries.push({x:value.dateTime, y:value.value})
+			flowSeries.push({x:value.dateTime.slice(11,16).replace(":",""), y:value.value})
+			//.slice(11,16)
+			//.replace(":","")
 			/*var insperation = showInspiration(item);
 			$(".results").append(insperation);*/
 		});
 		console.log(flowSeries);
+		console.log(typeof(flowSeries[0].x));
 	})
 	.fail(function(jqXHR, error){
 		/*var errorElem = showError(error);
@@ -50,15 +53,23 @@ $(document).ready(function(){
                 .showLegend(false)       //Show the legend, allowing users to turn on/off line series.
                 .showYAxis(true)        //Show the y-axis
                 .showXAxis(true)        //Show the x-axis
+
   		;
 
   		chart.xAxis     //Chart x-axis settings
-      	.axisLabel('Time (HH:MM)')
-      	.tickFormat(d3.format(',r'));
+      	.axisLabel('Time (Hour)')
+      	//.scale(d3.time.day)
+
+      	//.tickFormat(function(d){
+      		//return d3.time.format("%H:%M") (d);
+      	//}); 
+     	.tickFormat(d3.format("f"));
+      	//d3.time.format('%H'));
+
 
   		chart.yAxis     //Chart y-axis settings
       	.axisLabel('Flow (cfs)')
-      	.tickFormat(d3.format('.02f'));
+      	.tickFormat(d3.format(',.0f'));
 
   		//Done setting the chart up? Time to render it!*/
   		var myData = getData();   //You need data...
@@ -70,11 +81,13 @@ $(document).ready(function(){
   		//Update the chart when window resizes.
   		nv.utils.windowResize(function() { chart.update() });
   	return chart;
-	});
-	/**************************************
- 		* Simple test data generator
+  });
+});
+
+	//*************************************
+ 		// Simple test data generator
  	
-	function sinAndCos() {
+	/*function sinAndCos() {
   		var sin = []
 
   		//Data is represented as an array of {x,y} pairs.
@@ -93,5 +106,3 @@ $(document).ready(function(){
     
   		];
 	}*/
-
-});
