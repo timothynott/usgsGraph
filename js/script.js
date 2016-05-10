@@ -60,7 +60,7 @@ $(document).ready(function(){
                 .showLegend(false)       //Show the legend, allowing users to turn on/off line series.
                 .showYAxis(true)        //Show the y-axis
                 .showXAxis(true)        //Show the x-axis
-
+		.x(function(d){ return Date(d.x);})
   		;
 
   		chart.xAxis     //Chart x-axis settings
@@ -70,9 +70,9 @@ $(document).ready(function(){
       	//.tickFormat(function(d){
       		//return d3.time.format("%H:%M") (d);
       	//}); 
-     	.tickFormat(d3.format("f"));
+     	.tickFormat(function(d){return d3.time.format("%d") (d)});
       	//d3.time.format('%H'));
-
+		chart.xScale = d3.time.scale();
 
   		chart.yAxis     //Chart y-axis settings
       	.axisLabel('Flow (cfs)')
