@@ -1,5 +1,13 @@
 
-var flowSeries = [];
+var flowSeries = {
+	labels:[];
+	datasets:[
+			{
+			strokeColor: black,
+			data:[]
+			}
+		]
+}
 var gageName = "";
 var getData = function(){
 
@@ -22,7 +30,8 @@ var getData = function(){
 		$(".search-results").html(searchResults);*/
 		//myData = [result.timeSeries[3].values.dateTime,result.timeSeries[3].values.children().text()];
 		$.each(timeSeries.values[0].value, function(i, value){
-			flowSeries.push({x:value.dateTime, y:value.value})
+			flowSeries.labels.push(value.dateTime)
+			flowSeries.datasets.data.push(value.value)
 			//.slice(11,16)
 			//.replace(":","")
 			/*var insperation = showInspiration(item);
@@ -53,7 +62,7 @@ var showData = function(gageName){
 ///////////////////////////////ON LOAD////////////////////////////////
 $(document).ready(function(){
 
-	nv.addGraph(function() {
+	/*nv.addGraph(function() {
   		var chart = nv.models.lineChart()
                 .margin({left: 100, right: 50})  //Adjust chart margins to give the x-axis some breathing room.
                 .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
@@ -78,7 +87,7 @@ $(document).ready(function(){
       	.axisLabel('Flow (cfs)')
       	.tickFormat(d3.format(',.0f'));
 
-  		//Done setting the chart up? Time to render it!*/
+  		//Done setting the chart up? Time to render it!
   		var myData = getData();   //You need data...
 
   		d3.select('svg')    //Select the <svg> element you want to render the chart in.   
@@ -88,7 +97,8 @@ $(document).ready(function(){
   		//Update the chart when window resizes.
   		nv.utils.windowResize(function() { chart.update() });
   	return chart;
-  });
+  });*/
+  getData();
   showData();
 });
 
