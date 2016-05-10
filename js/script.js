@@ -19,7 +19,7 @@ var flowSeries = {
 			xAxes: [{
 				type: "time",
 				//gridLines.display: false,
-				ticks.display: true
+				//ticks.display: true
 			}],
 			time: {
         			// string/callback - By default, date objects are expected. You may use a pattern string from http://momentjs.com/docs/#/parsing/string-format/ to parse a time string format, or use a callback function that is passed the label, and must return a moment() instance.
