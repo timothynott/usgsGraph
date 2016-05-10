@@ -11,4 +11,4 @@ new Chart(histogram).Line(flowSeries);
       borderColor: black
     }*/
     
-});
+
