@@ -1,6 +1,6 @@
 
 var flowSeries = {
-	labels:[];
+	labels:[],
 	datasets:[
 			{
 			strokeColor: black,
