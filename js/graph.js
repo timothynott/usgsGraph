@@ -1,4 +1,7 @@
-var myLineChart = new Chart(ctx, {
+var histogram = document.getElementById('buyers').getContext('2d');
+new Chart(histogram).Line(myData);
+
+/*var myLineChart = new Chart(ctx, {
     type: 'line',
     data: getData(),
     options: {
@@ -6,6 +9,6 @@ var myLineChart = new Chart(ctx, {
       yAxisID: "Flow (cfs)",
       fill:false,
       borderColor: black
-    }
+    }*/
     
 });
