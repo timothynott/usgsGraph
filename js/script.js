@@ -22,7 +22,7 @@ var getData = function(){
 		$(".search-results").html(searchResults);*/
 		//myData = [result.timeSeries[3].values.dateTime,result.timeSeries[3].values.children().text()];
 		$.each(timeSeries.values[0].value, function(i, value){
-			flowSeries.push({x:value.dateTime.slice(11,16).replace(":",""), y:value.value})
+			flowSeries.push({x:value.dateTime, y:value.value})
 			//.slice(11,16)
 			//.replace(":","")
 			/*var insperation = showInspiration(item);
