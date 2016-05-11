@@ -3,13 +3,13 @@ var flowSeries = {
 	labels:[],
 	datasets:[
 			{
-			strokeColor: black,
+			strokeColor: "black",
 			data:[],
 			xAxisID: "Time",
 			yAxisID: "Flow (cfs)",
 			fill:false,
 			lineTension: 0,
-			borderColor: white,
+			borderColor: "white",
 			pointRadius: 0,
 			
 			}
@@ -48,8 +48,8 @@ var flowSeries = {
         			},
         			// Sets the display format used in tooltip generation
         			tooltipFormat: ''
-        			*/
-    			},
+        			
+    		},*/
 		}
 	}
 }
@@ -145,7 +145,7 @@ $(document).ready(function(){
   });*/
   getData();
   showData();
-  var histogram = document.getElementById('buyers').getContext('2d');
+  var histogram = document.getElementById('graph').getContext('2d');
 new Chart(histogram).Line(flowSeries);
 
 });
