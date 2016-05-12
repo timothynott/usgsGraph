@@ -20,6 +20,7 @@ body{
 }
 #title h1{
 	margin: 0;
+	text-shadow: 0.5px 0.5px black;
 }
 
 .main{
@@ -30,7 +31,7 @@ body{
 }
 .main>i{
 	font-size: 100px;
-	margin: 100px 40px;
+	margin: 100px 20px;
 }
 .main>i:hover{
 	color: #4C3000;
@@ -43,9 +44,12 @@ body{
 	background: #D3E8E8;
 	border-radius: 3px;
 	margin: auto;
+	box-shadow: 1px 3px 5px #D3E8E8;
 }
 .graph{
 	text-align: center;
+	width: 600px;
+	height: 400px;
 }
 .graph h4, .graph h5{
 	margin: 0;
