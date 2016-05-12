@@ -34,6 +34,7 @@ body{
 }
 .main>i:hover{
 	color: #4C3000;
+	cursor: pointer;
 }
 
 .content{

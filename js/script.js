@@ -35,25 +35,20 @@ var getData = function(){
     type: "GET",
   })
   .done(function(result){
-    
-    gageName.push(result.value.timeSeries[0].sourceInfo.siteName);
     $(".graph h5").html("1 of "+result.value.timeSeries.length+"gages near you");
-    /*var searchResults = showSearchResults(tags, result.items.length);
-    $(".search-results").html(searchResults);*/
-    //myData = [result.timeSeries[3].values.dateTime,result.timeSeries[3].values.children().text()];
-    $.each(result.value.timeSeries[0].values[0].value, function(i, value){
-      xData.push(value.dateTime);
-      yData.push(parseInt(value.value));
-      //.slice(11,16)
-      //.replace(":","")
-      /*var insperation = showInspiration(item);
-      $(".results").append(insperation);*/
-    })
+    console.log(result);
+    gageName.push(result.value.timeSeries[i].sourceInfo.siteName);
+    console.log(gageName);
+      $.each(result.value.timeSeries[i].values[0].value, function(i, value){
+        xData.push(value.dateTime);
+        yData.push(parseInt(value.value));
+      })
     var hydrograph = document.getElementById('graph').getContext('2d');
-  var myChart = new Chart(hydrograph,{
-    type: "line",
-    data: flowSeries
-  });
+    var myChart = new Chart(hydrograph,{
+          type: "line",
+          data: flowSeries  
+      });
+    
   })
   .fail(function(jqXHR, error){
     /*var errorElem = showError(error);
@@ -65,12 +60,16 @@ var getData = function(){
 
 ///////////////////////////////ON LOAD////////////////////////////////
 $(document).ready(function(){
-
+  i = 0;
   getData();
-  //showData();
-  
-
-  
+  $(".main").on("click","#leftArrow", function(){
+      i --;
+      getData();
+  });
+  $(".main").on("click", "#rightArrow", function(){
+    i ++;
+    getData();
+  })
 });
 
 ////////////////////////////////////////////////////////////////////
