@@ -1,4 +1,8 @@
-
+var long = "";
+var lat = "";
+var longExt="";
+var latExt = "";
+ 
  var getLocation = function() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position){
