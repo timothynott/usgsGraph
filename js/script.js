@@ -45,30 +45,42 @@ var sendRequest = function(request){
   })
   //if json request works, call populateResult() function to save result object
   //and make it accessible globally
-  .done(populateResult)
+  .done(populateSeries)
   .fail(function(jqXHR, error){
     console.log("error sending request");
   })
 };
-var usgsResults = {};
-//if the request (one funtion down) is successfully sent, populate flowSeries with the results
-var populateResult = function(result){
-  //save result to globally available variable so I can re-use it later
-
-  //when I look at result.value here, it's golden. I need to make it globally accessible
-  //I'm following the pattern used by writeRequest()
-  usgsResults = result.value;
-};
-//but then when I try to use usgsResults in populateSeries() it returns to its 
-//empty state
 
 //define data arrays
  var yData = [];
  var xData = [];
  var gageName = "";
- 
-//flowSeries is the data object that is populated from USGS json
- var flowSeries = {
+ //sites array will hold each iteration of flowSeries;
+ var sites = [];
+//include options for flowSeries
+var options = {scaleShowGridLines : true, scaleShowVerticalLines: true};
+
+
+//populate one flowSeries object per site
+var populateSeries = function(results){
+  console.log(results.value);
+  //but when I look at usgsResults here, it's empty
+  console.log(results.value.timeSeries.length);
+  //show how many results
+  var numberOfSites = results.value.timeSeries.length;
+  $(".graph h5").html(numberOfSites+" gages near you");
+  
+  //create a flowSeries object for each timeSeries in the results
+  for (i=0; i<numberOfSites; i++){
+    //show the name of the result
+    gageName=results.value.timeSeries[i].sourceInfo.siteName;
+    //go through each x,y pair in that timeseries's results. 
+    $.each(results.value.timeSeries[i].values[0].value, function(i, value){
+    xData.push(value.dateTime);
+    yData.push(parseInt(value.value));
+    });
+    //flowSeries is the data object that is populated from USGS json
+    var flowSeries = {
       labels:xData,
       datasets:[{
           label: gageName,
@@ -80,40 +92,17 @@ var populateResult = function(result){
           //fill:false,
           //lineTension: 0,
           //borderColor: "white",
-      //pointRadius: 0, 
+          //pointRadius: 0, 
       }],
       options: options
-  };
-//include options for flowSeries
-var options = {scaleShowGridLines : true, scaleShowVerticalLines: true};
-
-var populateSeries = function(usgsResults){
-  console.log(usgsResults);
-  //but when I look at usgsResults here, it's empty
-  console.log(usgsResults.timeSeries.length);
-  //show how many results
-  var numberOfSites = usgsResults.timeSeries.length;
-  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
-  //show the name of the result
-  flowSeries.datasets.label=usgsResults.timeSeries[n].sourceInfo.siteName;
-  
-  //go through each x,y pair in the result. value of n starts at 0 and changes as arrows are clicked
-  $.each(usgsResults.timeSeries[n].values[0].value, function(i, value){
-    xData.push(value.dateTime);
-    yData.push(parseInt(value.value));
-  })
+    };
+  sites.push(flowSeries);
+  }
   var hydrograph = document.getElementById('graph').getContext('2d');
   var myChart = new Chart(hydrograph,{
     type: "line",
-    data: flowSeries  
+    data: sites[n]
   });
-};
-
-//clear xData, yData, and gageName arrays
-var resetData = function(){
-  yData=[];
-  xData=[];
-  gageName=[];
 };
 
 ///////////////////////////////ON LOAD////////////////////////////////
@@ -122,6 +111,7 @@ $(document).ready(function(){
   getLocation();
   n = 0;
   
+  
   //populateSeries();
   //writeRequest() calls sendRequest();
   //sendRequest already calls populateSeries();
@@ -129,14 +119,20 @@ $(document).ready(function(){
   $(".main").on("click","#leftArrow", function(){
     //click on arrow to reduce value of i by one
     n --;
-    resetData();
-    populateSeries();
-      
+    var hydrograph = document.getElementById('graph').getContext('2d');
+    var myChart = new Chart(hydrograph,{
+      type: "line",
+      data: sites[n]
+    });
   });
+
   $(".main").on("click", "#rightArrow", function(){
     n ++;
-    resetData();
-    populateSeries();
+    var hydrograph = document.getElementById('graph').getContext('2d');
+    var myChart = new Chart(hydrograph,{
+      type: "line",
+      data: sites[n]
+    });
   });
 });
 
