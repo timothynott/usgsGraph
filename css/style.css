@@ -34,7 +34,7 @@ body{
 	margin: 100px 20px;
 }
 .main>i:hover{
-	color: #4C3000;
+	box-shadow: 1px 1px -1px -1px white;
 	cursor: pointer;
 }
 
