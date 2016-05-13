@@ -38,7 +38,7 @@ var sendRequest = function(request){
   //console.log(request);
   //request carries over
   $.ajax({
-    url: "http://waterservices.usgs.gov/nwis/iv/?",
+    url: "https://waterservices.usgs.gov/nwis/iv/?",
     format: "json",
     data: request,
     type: "GET",
