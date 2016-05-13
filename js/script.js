@@ -63,7 +63,7 @@ var sendRequest = function(request){
           label: gageName,
           pointStrokeColor: "#fff",
           strokeColor: "rgba(220,220,220,1)",
-          data:yData
+          data:yData,
           xAxisID: "Time",
           yAxisID: "Flow (cfs)"
       }],
