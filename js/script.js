@@ -3,7 +3,17 @@ var lat = "";
 var longExt="";
 var latExt = "";
 var n = 0;
-
+//get coordinates from browser by calling writeRequest function from getCurrentPosition
+//putting writeRequest as a callback allows the position values to be remembered
+var getLocation = function() {
+  if (navigator.geolocation) {
+    //anonymous function
+    navigator.geolocation.getCurrentPosition(writeRequest);
+  }
+  else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+};
 
 //put the coordinates (received in function described one below) into a request 
 //that will be sent to USGS 
@@ -19,29 +29,44 @@ var writeRequest = function(position){
     siteType:"ST",
     siteStatus: "active",
     format: "json",
-  }
-  console.log(request);
+  };
   sendRequest(request);
 };
-//get coordinates from browser by calling writeRequest function from getCurrentPosition
-//putting writeRequest as a callback allows the position values to be remembered
-var getLocation = function() {
-  if (navigator.geolocation) {
-    //anonymous function
-    navigator.geolocation.getCurrentPosition(writeRequest);
-  }
-  else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
+
+//send the request to USGS
+var sendRequest = function(request){
+  //console.log(request);
+  //request carries over
+  $.ajax({
+    url: "http://waterservices.usgs.gov/nwis/iv/?",
+    format: "json",
+    data: request,
+    type: "GET",
+  })
+  //if json request works, call populateResult() function to save result object
+  //and make it accessible globally
+  .done(populateResult)
+  .fail(function(jqXHR, error){
+    console.log("error sending request");
+  })
 };
+var usgsResults = {};
+//if the request (one funtion down) is successfully sent, populate flowSeries with the results
+var populateResult = function(result){
+  //save result to globally available variable so I can re-use it later
 
-
-        
+  //when I look at result.value here, it's golden. I need to make it globally accessible
+  //I'm following the pattern used by writeRequest()
+  usgsResults = result.value;
+};
+//but then when I try to use usgsResults in populateSeries() it returns to its 
+//empty state
 
 //define data arrays
  var yData = [];
  var xData = [];
- var gageName = [];
+ var gageName = "";
+ 
 //flowSeries is the data object that is populated from USGS json
  var flowSeries = {
       labels:xData,
@@ -62,18 +87,18 @@ var getLocation = function() {
 //include options for flowSeries
 var options = {scaleShowGridLines : true, scaleShowVerticalLines: true};
 
-
-
-
-//if the request (one funtion down) is successfully sent, populate flowSeries with the results
-var populateSeries = function(result){
+var populateSeries = function(usgsResults){
+  console.log(usgsResults);
+  //but when I look at usgsResults here, it's empty
+  console.log(usgsResults.timeSeries.length);
   //show how many results
-  $(".graph h5").html("1 of "+result.value.timeSeries.length+" gages near you");
+  var numberOfSites = usgsResults.timeSeries.length;
+  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
   //show the name of the result
-  gageName=result.value.timeSeries[n].sourceInfo.siteName;
-  console.log(gageName);
+  flowSeries.datasets.label=usgsResults.timeSeries[n].sourceInfo.siteName;
+  
   //go through each x,y pair in the result. value of n starts at 0 and changes as arrows are clicked
-  $.each(result.value.timeSeries[n].values[0].value, function(i, value){
+  $.each(usgsResults.timeSeries[n].values[0].value, function(i, value){
     xData.push(value.dateTime);
     yData.push(parseInt(value.value));
   })
@@ -83,24 +108,6 @@ var populateSeries = function(result){
     data: flowSeries  
   });
 };
-
-//send the request to USGS
-var sendRequest = function(request){
-  $.ajax({
-    url: "http://waterservices.usgs.gov/nwis/iv/?",
-    format: "json",
-    data: request,
-    type: "GET",
-  })
-  //if json request works, call populateSeries() function so result variable
-  //will be accessible
-  .done(populateSeries)
-  .fail(function(jqXHR, error){
-    /*var errorElem = showError(error);
-    $(".search-results").append(errorElem);*/
-  })
-};
-
 
 //clear xData, yData, and gageName arrays
 var resetData = function(){
@@ -114,6 +121,8 @@ $(document).ready(function(){
 
   getLocation();
   n = 0;
+  
+  //populateSeries();
   //writeRequest() calls sendRequest();
   //sendRequest already calls populateSeries();
   
