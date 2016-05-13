@@ -2,18 +2,20 @@ var long = "";
 var lat = "";
 var longExt="";
 var latExt = "";
+var n = 0;
  
  var getLocation = function() {
     if (navigator.geolocation) {
+      //anonymous function
         navigator.geolocation.getCurrentPosition(function(position){
-          long=position.coords.longitude.toString().slice(0,11);
-          lat=position.coords.latitude.toString().slice(0,9);
-          longExt=(position.coords.longitude+1).toString().slice(0,11);
-          latExt=(position.coords.latitude+1).toString().slice(0,9);
-          //have to put getData() function here so that long, lat coord values are remembered
-           getData(long, lat, longExt, latExt);
+        long=position.coords.longitude.toString().slice(0,11);
+        lat=position.coords.latitude.toString().slice(0,9);
+        longExt=(position.coords.longitude+1).toString().slice(0,11);
+        latExt=(position.coords.latitude+1).toString().slice(0,9);
         });
         
+          //have to put getData() function here so that long, lat coord values are remembered
+          
     } else {
         x.innerHTML = "Geolocation is not supported by this browser.";
     }
@@ -47,9 +49,14 @@ var resetData = function(){
   
 var options = {scaleShowGridLines : true, scaleShowVerticalLines: true};
   
-var getData = function(long, lat, longExt, latExt){
+var getData = function(lng, lt, xlng, xlt){
+  long = (lng)?lng:long;
+  lat = (lt)?lt:lat;
+  longExt = (xlng)?xlng:longExt;
+  latExt = (xlt)?xlt:latExt;
+  
   var request = {
-    bBox: long+","+lat+","+longExt+","+latExt,
+    bBox: lng+","+lt+","+xlng+","+xlt,
     period: "P1D",
     parameterCD: "00060",
     siteType:"ST",
@@ -65,10 +72,10 @@ var getData = function(long, lat, longExt, latExt){
   .done(function(result){
     $(".graph h5").html("1 of "+result.value.timeSeries.length+" gages near you");
     numberOfTimeSeries = result.value.timeSeries.length;
-    gageName.push(result.value.timeSeries[i].sourceInfo.siteName);
+    gageName.push(result.value.timeSeries[n].sourceInfo.siteName);
     console.log(gageName);
       //go through each x,y pair in the specified timeSeries
-      $.each(result.value.timeSeries[i].values[0].value, function(i, value){
+      $.each(result.value.timeSeries[n].values[0].value, function(i, value){
         xData.push(value.dateTime);
         yData.push(parseInt(value.value));
       })
@@ -90,21 +97,21 @@ $(document).ready(function(){
 
   getLocation();
   //getData();
-  i = 0;
- 
+  n = 0;
+  getData(lng, lt, xlng, xlt);
   
   $(".main").on("click","#leftArrow", function(){
     //click on arrow to reduce value of i by one
-    i --;
+    n --;
     resetData();
-    getData();
+    getData(long, lat, longExt, latExt);
       
   });
   $(".main").on("click", "#rightArrow", function(){
-    i ++;
+    n ++;
     resetData();
-    getData();
-  })
+    getData(long, lat, longExt, latExt);
+  });
 });
 
 ////////////////////////////////////////////////////////////////////
