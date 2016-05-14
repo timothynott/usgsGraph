@@ -1,12 +1,11 @@
 
-/*var myLineChart = new Chart(ctx, {
-    type: 'line',
-    data: getData(),
-    options: {
-      xAxisID: "Time",
-      yAxisID: "Flow (cfs)",
-      fill:false,
-      borderColor: black
-    }*/
-    
 
+
+var drawGraph = function(){
+  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
+  var hydrograph = document.getElementById('graph').getContext('2d');
+  var myChart = new Chart(hydrograph,{
+    type: "line",
+    data: sites[n]
+  });
+};

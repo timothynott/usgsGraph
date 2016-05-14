@@ -56,10 +56,8 @@ var sites = [];
 var numberOfSites = 0;
 //populate flowSeries object with the results
 var populateSeries = function(results){
-  console.log(results);
-  //show how many results
   numberOfSites = results.value.timeSeries.length;
-  
+  //populate flowSeries object for each timeSeries
   for (i=0; i<numberOfSites; i++){
     //define data arrays and clear each round
     var yData = [];
@@ -69,30 +67,30 @@ var populateSeries = function(results){
     gageName=results.value.timeSeries[i].sourceInfo.siteName;
     //go through each x,y pair in that timeseries's results. 
     $.each(results.value.timeSeries[i].values[0].value, function(i, value){
-    var timestamp=moment(value.dateTime);
-    timestamp.format("d MMM HH:mm");
-    xData.push(timestamp);
-    var flowValue = parseInt(value.value);
-    yData.push(flowValue);
-    });
-       //include options for flowSeries
-    var options = {scales: {
-                  xAxes:[{
-                    //type: "time",
-                    position: "bottom",
-                    //time: {
-                      //parser: true,
-                      //round: "hour"
-                    //},
-                    scaleLabel:{
-                      labelString: "time"
-                    }
-                  }],
-                  yAxes:[{
-                    type: "linear",
-                    id: "flow (cfs)"
-                  }]  
-                }  
+      var timestamp = moment(value.dateTime).format("MM/DD HH:mm");
+      xData.push(timestamp);
+      var flowValue = parseInt(value.value);
+      yData.push(flowValue);
+      });
+    console.log(flowSeries);
+    //include options for flowSeries
+    var options = { 
+      scaleShowLabels: true,
+      responsive: true,
+      tooltips:{
+        enabled: false
+      },
+      maintainAspectRatio: false,
+
+      scales:{
+        xAxes: [{
+          type: "time",
+          time:{
+            parser: true
+            
+          }
+        }]
+      }
     };
     //flowSeries is the data object that is populated from USGS json
     var flowSeries = {
@@ -101,7 +99,11 @@ var populateSeries = function(results){
           label: gageName,
           pointStrokeColor: "#fff",
           strokeColor: "rgba(220,220,220,1)",
-          data:yData 
+          data:yData,
+          borderColor: '#0F5498',
+          pointRadius: 0,
+          pointHoverRadius: 1
+          
       }],
       options: options
     };
@@ -109,12 +111,7 @@ var populateSeries = function(results){
     sites.push(flowSeries);
   };
   //once the site series has been populated, show the graph
-  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
-  var hydrograph = document.getElementById('graph').getContext('2d');
-  var myChart = new Chart(hydrograph,{
-    type: "line",
-    data: sites[0]
-  });
+  drawGraph();
 };
 
 ///////////////////////////////ON LOAD////////////////////////////////
@@ -128,22 +125,12 @@ $(document).ready(function(){
   $(".main").on("click","#leftArrow", function(){
     //click on arrow to reduce value of i by one
     n --;
-    $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
-    var hydrograph = document.getElementById('graph').getContext('2d');
-    var myChart = new Chart(hydrograph,{
-    type: "line",
-    data: sites[n]
-    });
+    drawGraph();
   });
 
   $(".main").on("click", "#rightArrow", function(){
     n ++;
-    $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
-    var hydrograph = document.getElementById('graph').getContext('2d');
-    var myChart = new Chart(hydrograph,{
-    type: "line",
-    data: sites[n]
-    });
+    drawGraph();
   });
   //trigger right and left arrow clicks from key events
   $("body").keydown(function(e){
