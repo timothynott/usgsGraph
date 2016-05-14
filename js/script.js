@@ -38,18 +38,18 @@ var sendRequest = function(request){
   //console.log(request);
   //request carries over
   $.ajax({
-    url: "https://waterservices.usgs.gov/nwis/iv/?",
+    url: "http://waterservices.usgs.gov/nwis/iv/?",
     format: "json",
     data: request,
     type: "GET",
   })
-
+  //if json request works, call populateResult() function to save result object
+  //and make it accessible globally
   .done(populateSeries)
   .fail(function(jqXHR, error){
     console.log("error sending request");
   })
 };
-
 //create an array to track each site's flowSeries
 var sites = [];
 //create a global variable that will count the number of sites
@@ -92,16 +92,8 @@ var populateSeries = function(results){
         }]
       }
     };
-
-
-//define data arrays
- var yData = [];
- var xData = [];
- var gageName = "";
- 
-//flowSeries is the data object that is populated from USGS json
- var flowSeries = {
-
+    //flowSeries is the data object that is populated from USGS json
+    var flowSeries = {
       labels:xData,
       datasets:[{
           label: gageName,
@@ -111,29 +103,15 @@ var populateSeries = function(results){
           borderColor: '#0F5498',
           pointRadius: 0,
           pointHoverRadius: 1
+          
       }],
       options: options
     };
    
     sites.push(flowSeries);
   };
-
   //once the site series has been populated, show the graph
-
-var populateSeries = function(results){
-  console.log(results);
-  //check that function is accessing the results
-  var numberOfSites = results.value.timeSeries.length;
-  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
-  //show the name of the result
-  flowSeries.datasets.label=results.value.timeSeries[n].sourceInfo.siteName;
-  //go through each x,y pair in the result. value of n starts at 0 and changes as arrows are clicked
-  $.each(results.value.timeSeries[n].values[0].value, function(i, value){
-    xData.push(value.dateTime);
-    yData.push(parseInt(value.value));
-  })
   drawGraph();
-
 };
 
 ///////////////////////////////ON LOAD////////////////////////////////
