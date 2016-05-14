@@ -67,51 +67,17 @@ var populateSeries = function(results){
     gageName=results.value.timeSeries[i].sourceInfo.siteName;
     //go through each x,y pair in that timeseries's results. 
     $.each(results.value.timeSeries[i].values[0].value, function(i, value){
+      //use moment library to format iso timestamp, then push into xData array
       var timestamp = moment(value.dateTime).format("MM/DD HH:mm");
       xData.push(timestamp);
-      var flowValue = parseInt(value.value);
-      yData.push(flowValue);
+      yData.push(parseInt(value.value));
       });
-    console.log(flowSeries);
-    //include options for flowSeries
-    var options = { 
-      scaleShowLabels: true,
-      responsive: true,
-      tooltips:{
-        enabled: false
-      },
-      showTooltips: false,
-      maintainAspectRatio: false,
-      customTooltips: false,
-      scales:{
-        xAxes: [{
-          type: "time",
-          time:{
-            parser: true
-            
-          }
-        }]
-      }
-    };
     //flowSeries is the data object that is populated from USGS json
-    var flowSeries = {
-      labels:xData,
-      datasets:[{
-          label: gageName,
-          pointStrokeColor: "#fff",
-          strokeColor: "rgba(220,220,220,1)",
-          data:yData,
-          borderColor: '#0F5498',
-          pointRadius: 0,
-          fill: false
-      }],
-      options: options
-    };
-   
-    sites.push(flowSeries);
+    makeFlowSeries(yData, xData, gageName);
+   //makeFlowSeries pushes the site's results into the sites array
   };
-  //once the site series has been populated, show the graph
-  drawGraph();
+  //once the results for each site have been populated, show the graph of the first site
+  drawGraph(yData, xData, gageName);
 };
 
 ///////////////////////////////ON LOAD////////////////////////////////
@@ -129,18 +95,18 @@ $(document).ready(function(){
       drawGraph();
     }
     else{
-      n++;
+      n=numberOfSites-1;
       drawGraph();
     }
   });
 
   $(".main").on("click", "#rightArrow", function(){
-    if (n<numberOfSites){
+    if (n+1<numberOfSites){
       n++;
       drawGraph();
     }
     else{
-      n--;
+      n=0;
       drawGraph();
     }
   });
