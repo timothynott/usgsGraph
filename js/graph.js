@@ -31,15 +31,15 @@ var drawGraph = function(){
             type: "time",
             scaleLabel:{
               display: true,
-              labelString: "Time"
+              labelString: "Time (hours)"
             },
             time:{
               parser: true,
-              unit: "day",
-              unitStepSize: 0.5,
+              unit: "hour",
+              unitStepSize: 12,
               displayFormats: {
-                'hour': 'HH:mm', // Sept 4, 5PM
-                'day': 'DD MMM', // Sep 4 2014
+                'hour': 'HH:mm', // 13:00
+                'day': 'DD MMM HH:mm', // 04 June 13:00
               }
             }
           }],
@@ -54,3 +54,5 @@ var drawGraph = function(){
     }
   });
 };
+
+
