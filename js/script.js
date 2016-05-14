@@ -51,53 +51,38 @@ var sendRequest = function(request){
   })
 };
 
-//define data arrays
- var yData = [];
- var xData = [];
- var gageName = "";
- 
+ //create an array to track each site's flowSeries
+ var sites = [];
 //populate flowSeries object with the results
 var populateSeries = function(results){
+  console.log(results);
   //show how many results
   var numberOfSites = results.value.timeSeries.length;
-  $(".graph h5").html(n+" of"+numberOfSites+" gages near you");
-  
-  //show the name of the result
-  gageName=results.value.timeSeries[n].sourceInfo.siteName;
-  //go through each x,y pair in that timeseries's results. 
-  $.each(results.value.timeSeries[n].values[0].value, function(i, value){
-  var timestamp=moment(value.dateTime);
-  timestamp.format("d MMM HH:mm");
-  xData.push(timestamp);
-  var flowValue = parseInt(value.value);
-  yData.push(flowValue);
-  });
-  //flowSeries is the data object that is populated from USGS json
-  var flowSeries = {
-      labels:xData,
-      datasets:[{
-          label: gageName,
-          pointStrokeColor: "#fff",
-          strokeColor: "rgba(220,220,220,1)",
-          data:yData
-          //xAxisID: "Time",
-          //yAxisID: "Flow (cfs)",
-          //fill:false,
-          //lineTension: 0,
-          //borderColor: "white",
-          //pointRadius: 0, 
-      }],
-      options: options
-  };
-  //include options for flowSeries
-  var options = {scales: {
+  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
+  for (i=0; i<numberOfSites; i++){
+    //define data arrays and clear each round
+    var yData = [];
+    var xData = [];
+    var gageName = "";
+     //show the name of the result
+    gageName=results.value.timeSeries[i].sourceInfo.siteName;
+    //go through each x,y pair in that timeseries's results. 
+    $.each(results.value.timeSeries[i].values[0].value, function(i, value){
+    var timestamp=moment(value.dateTime);
+    timestamp.format("d MMM HH:mm");
+    xData.push(timestamp);
+    var flowValue = parseInt(value.value);
+    yData.push(flowValue);
+    });
+       //include options for flowSeries
+    var options = {scales: {
                   xAxes:[{
-                    type: "time",
+                    //type: "time",
                     position: "bottom",
-                    time: {
-                      parser: moment(),
-                      round: "hour"
-                    },
+                    //time: {
+                      //parser: true,
+                      //round: "hour"
+                    //},
                     scaleLabel:{
                       labelString: "time"
                     }
@@ -107,13 +92,27 @@ var populateSeries = function(results){
                     id: "flow (cfs)"
                   }]  
                 }  
-};
-  sites.push(flowSeries);
-  
+    };
+    //flowSeries is the data object that is populated from USGS json
+    var flowSeries = {
+      labels:xData,
+      datasets:[{
+          label: gageName,
+          pointStrokeColor: "#fff",
+          strokeColor: "rgba(220,220,220,1)",
+          data:yData 
+      }],
+      options: options
+    };
+   
+    sites.push(flowSeries);
+  };
+ 
+  console.log(flowSeries);
   var hydrograph = document.getElementById('graph').getContext('2d');
   var myChart = new Chart(hydrograph,{
     type: "line",
-    data: flowSeries
+    data: sites[0]
   });
 };
 
@@ -126,12 +125,20 @@ $(document).ready(function(){
   $(".main").on("click","#leftArrow", function(){
     //click on arrow to reduce value of i by one
     n --;
-    populateSeries();
+    var hydrograph = document.getElementById('graph').getContext('2d');
+    var myChart = new Chart(hydrograph,{
+    type: "line",
+    data: sites[n]
+  });
   });
 
   $(".main").on("click", "#rightArrow", function(){
     n ++;
-    populateSeries();
+    var hydrograph = document.getElementById('graph').getContext('2d');
+    var myChart = new Chart(hydrograph,{
+    type: "line",
+    data: sites[n]
+  });
   });
 });
 
