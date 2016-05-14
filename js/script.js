@@ -24,7 +24,7 @@ var writeRequest = function(position){
   latExt=(position.coords.latitude+1).toString().slice(0,9);  
   var request = {
     bBox: long+","+lat+","+longExt+","+latExt,
-    period: "P1D",
+    period: "P5D",
     parameterCD: "00060",
     siteType:"ST",
     siteStatus: "active",
@@ -80,8 +80,9 @@ var populateSeries = function(results){
       tooltips:{
         enabled: false
       },
+      showTooltips: false,
       maintainAspectRatio: false,
-
+      customTooltips: false,
       scales:{
         xAxes: [{
           type: "time",
@@ -102,8 +103,7 @@ var populateSeries = function(results){
           data:yData,
           borderColor: '#0F5498',
           pointRadius: 0,
-          pointHoverRadius: 1
-          
+          fill: false
       }],
       options: options
     };
@@ -124,13 +124,25 @@ $(document).ready(function(){
   //when left arrow click, reduce the value of n by 1  
   $(".main").on("click","#leftArrow", function(){
     //click on arrow to reduce value of i by one
-    n --;
-    drawGraph();
+    if(n>0){
+      n--;
+      drawGraph();
+    }
+    else{
+      n++;
+      drawGraph();
+    }
   });
 
   $(".main").on("click", "#rightArrow", function(){
-    n ++;
-    drawGraph();
+    if (n<numberOfSites){
+      n++;
+      drawGraph();
+    }
+    else{
+      n--;
+      drawGraph();
+    }
   });
   //trigger right and left arrow clicks from key events
   $("body").keydown(function(e){
