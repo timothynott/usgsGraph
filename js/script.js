@@ -50,15 +50,16 @@ var sendRequest = function(request){
     console.log("error sending request");
   })
 };
-
- //create an array to track each site's flowSeries
- var sites = [];
+//create an array to track each site's flowSeries
+var sites = [];
+//create a global variable that will count the number of sites
+var numberOfSites = 0;
 //populate flowSeries object with the results
 var populateSeries = function(results){
   console.log(results);
   //show how many results
-  var numberOfSites = results.value.timeSeries.length;
-  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
+  numberOfSites = results.value.timeSeries.length;
+  
   for (i=0; i<numberOfSites; i++){
     //define data arrays and clear each round
     var yData = [];
@@ -107,8 +108,8 @@ var populateSeries = function(results){
    
     sites.push(flowSeries);
   };
- 
-  console.log(flowSeries);
+  //once the site series has been populated, show the graph
+  $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
   var hydrograph = document.getElementById('graph').getContext('2d');
   var myChart = new Chart(hydrograph,{
     type: "line",
@@ -118,28 +119,45 @@ var populateSeries = function(results){
 
 ///////////////////////////////ON LOAD////////////////////////////////
 $(document).ready(function(){
-
+  //on load, get browser coordinates. all functions through end of populateSeries() are called
   getLocation();
+  //start with first site
   n = 0;
+
   //when left arrow click, reduce the value of n by 1  
   $(".main").on("click","#leftArrow", function(){
     //click on arrow to reduce value of i by one
     n --;
+    $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
     var hydrograph = document.getElementById('graph').getContext('2d');
     var myChart = new Chart(hydrograph,{
     type: "line",
     data: sites[n]
-  });
+    });
   });
 
   $(".main").on("click", "#rightArrow", function(){
     n ++;
+    $(".graph h5").html(n+" of "+numberOfSites+" gages near you");
     var hydrograph = document.getElementById('graph').getContext('2d');
     var myChart = new Chart(hydrograph,{
     type: "line",
     data: sites[n]
+    });
   });
+  //trigger right and left arrow clicks from key events
+  $("body").keydown(function(e){
+    if (e.which === 37){
+      $("#leftArrow").trigger("click");
+    }
   });
+
+  $("body").keydown(function(e){
+    if (e.which === 39){
+      $("#rightArrow").trigger("click");
+    }
+  });
+
 });
 
 ////////////////////////////////////////////////////////////////////
