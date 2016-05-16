@@ -29,6 +29,7 @@ var writeRequest = function(position){
     siteType:"ST",
     siteStatus: "active",
     format: "json",
+    csurl: 'http://waterservices.usgs.gov/nwis/iv/'
   };
   sendRequest(request);
 };
@@ -38,7 +39,7 @@ var sendRequest = function(request){
   //console.log(request);
   //request carries over
   $.ajax({
-    url: "http://waterservices.usgs.gov/nwis/iv/?",
+    url: 'https://www.gmtatennis.org/kp/proxy.php',
     format: "json",
     data: request,
     type: "GET",
