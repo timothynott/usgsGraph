@@ -36,13 +36,11 @@ var writeRequest = function(position){
 
 //send the request to USGS
 var sendRequest = function(request){
-  //console.log(request);
-  //request carries over
   $.ajax({
     url: 'https://www.gmtatennis.org/kp/proxy.php',
     format: "json",
     data: request,
-    type: "GET",
+    type: "GET"
   })
   //if json request works, call populateResult() function to save result object
   //and make it accessible globally
@@ -78,7 +76,7 @@ var populateSeries = function(results){
    //makeFlowSeries pushes the site's results into the sites array
   };
   //once the results for each site have been populated, show the graph of the first site
-  drawGraph(yData, xData, gageName);
+  drawGraph();
 };
 
 ///////////////////////////////ON LOAD////////////////////////////////
