@@ -23,20 +23,19 @@ var writeRequest = function(position){
   longExt=(position.coords.longitude+1).toString().slice(0,11);
   latExt=(position.coords.latitude+1).toString().slice(0,9);  
   var request = {
+    format: "json",
     bBox: long+","+lat+","+longExt+","+latExt,
     period: "P5D",
     parameterCD: "00060",
     siteType:"ST",
     siteStatus: "active",
-    format: "json",
-    csurl: 'http://waterservices.usgs.gov/nwis/iv/'
+    csurl: 'http://waterservices.usgs.gov/nwis/iv/?'
   };
   sendRequest(request);
 };
 
-//send the request to USGS
+//send the request to USGS via proxy
 var sendRequest = function(request){
-
   //consider experimenting with saving $.ajax as a variable and basing sequence on 
   //the return of the ajax request
   $.ajax({
@@ -45,7 +44,6 @@ var sendRequest = function(request){
     data: request,
     type: "GET"
   })
-   
   .done(populateSeries)
   .fail(function(jqXHR, error){
     console.log("error sending request");
@@ -57,6 +55,7 @@ var sites = [];
 var numberOfSites = 0;
 //populate flowSeries object with the results
 var populateSeries = function(results){
+  console.log(results);
   numberOfSites = results.value.timeSeries.length;
   //populate flowSeries object for each timeSeries
   for (i=0; i<numberOfSites; i++){
