@@ -29,19 +29,21 @@ var writeRequest = function(position){
     siteType:"ST",
     siteStatus: "active",
     format: "json",
+    csurl: 'http://waterservices.usgs.gov/nwis/iv/'
   };
   sendRequest(request);
 };
 
 //send the request to USGS
 var sendRequest = function(request){
+
   //consider experimenting with saving $.ajax as a variable and basing sequence on 
   //the return of the ajax request
   $.ajax({
-    url: "https://waterservices.usgs.gov/nwis/iv/?",
+    url: 'https://www.gmtatennis.org/kp/proxy.php',
     format: "json",
     data: request,
-    type: "GET",
+    type: "GET"
   })
    
   .done(populateSeries)
@@ -76,7 +78,7 @@ var populateSeries = function(results){
    //makeFlowSeries pushes the site's results into the sites array
   };
   //once the results for each site have been populated, show the graph of the first site
-  drawGraph(yData, xData, gageName);
+  drawGraph();
 };
 
 ///////////////////////////////ON LOAD////////////////////////////////
