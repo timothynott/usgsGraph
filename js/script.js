@@ -29,7 +29,7 @@ var writeRequest = function(position){
     parameterCD: "00060",
     siteType:"ST",
     siteStatus: "active",
-    csurl: 'http://waterservices.usgs.gov/nwis/iv/?'
+    csurl: 'https://waterservices.usgs.gov/nwis/iv/'
   };
   sendRequest(request);
 };
