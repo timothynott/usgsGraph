@@ -31,15 +31,15 @@ var drawGraph = function(){
             type: "time",
             scaleLabel:{
               display: true,
-              labelString: "Time (hours)"
+              labelString: "Time"
             },
             time:{
               parser: true,
-              unit: "hour",
-              unitStepSize: 12,
+              unit: "day",
+              unitStepSize: 1,
               displayFormats: {
                 'hour': 'HH:mm', // 13:00
-                'day': 'DD MMM HH:mm', // 04 June 13:00
+                'day': 'DD MMM', // 04 June
               }
             }
           }],
