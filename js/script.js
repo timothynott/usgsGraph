@@ -9,7 +9,7 @@ var getLocation=function(){
   //if possible to get location from the browser
     if (navigator.geolocation) {
       //return the geolocation object
-      return navigator.geolocation.getCurrentPosition(writeRequest);
+      return navigator.geolocation.getCurrentPosition(usgsRequest.writeRequest);
     }
     else {
       x.innerHTML = "Geolocation is not supported by this browser.";
@@ -99,7 +99,7 @@ view.drawGraph=function(){
     $(".graph h5").html(numberOfSites+" gages near you");
     var myChart = new Chart(this.hydrograph,{
       type: "line",
-      data: model.sites.array,
+      data: sites.array,
       options: {
         scaleShowLabels: true,
         responsive: true,
@@ -153,10 +153,11 @@ view.makeFlowSeries=function(){
 $(document).ready(function(){
   //controller function to connect the two
   controller = function(){
-    //call populateSeries.readResult when usgsData is done
-    usgsData(populateSeries.readResult);
-    //call view.drawGraph when model.populateSeries is done
-    populateSeries(drawGraph);
+    getLocation();
+    //call populateSeries.readResult when usgsData.sendRequest is done
+    usgsRequest.sendRequest(populateSeries.readResult);
+    //call view.drawGraph when populateSeries is done
+    populateSeries(view.drawGraph);
   };
 });
 
