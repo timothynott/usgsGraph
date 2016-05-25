@@ -1,45 +1,3 @@
-<<<<<<< HEAD
-var long = "";
-var lat = "";
-var longExt="";
-var latExt = "";
-var n = 0;
-//get coordinates from browser by calling writeRequest function from getCurrentPosition
-//putting writeRequest as a callback allows the position values to be remembered
-var getLocation = function() {
-  if (navigator.geolocation) {
-    //anonymous function
-    navigator.geolocation.getCurrentPosition(writeRequest);
-  }
-  else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-};
-
-//put the coordinates (received in function described one below) into a request 
-//that will be sent to USGS 
-var writeRequest = function(position){
-  long = position.coords.longitude.toString().slice(0,11);
-  lat=position.coords.latitude.toString().slice(0,9);
-  longExt=(position.coords.longitude+1).toString().slice(0,11);
-  latExt=(position.coords.latitude+1).toString().slice(0,9);  
-  var request = {
-    format: "json",
-    bBox: long+","+lat+","+longExt+","+latExt,
-    period: "P5D",
-    parameterCD: "00060",
-    siteType:"ST",
-    siteStatus: "active",
-    csurl: 'http://waterservices.usgs.gov/nwis/iv/'
-  };
-  sendRequest(request);
-};
-
-//send the request to USGS via proxy
-var sendRequest = function(request){
-  //consider experimenting with saving $.ajax as a variable and basing sequence on 
-  //the return of the ajax request
-=======
 //create namespace
 var usgsData={};
 //[[[[[[[[[[[[[[[[[[[[[[[MODEL]]]]]]]]]]]]]]]]]]]]]]]/////////////////
@@ -85,11 +43,10 @@ usgsData.model.prototype = {
       siteType:"ST",
       siteStatus: "active",
       csurl: 'http://waterservices.usgs.gov/nwis/iv/'
-    },
-  this.sendRequest(request)
+    };
+  this.sendRequest(request);
 },
  sendRequest:function(request){
->>>>>>> 4f50fdca29a6f87bb2262092cca96afbbdad32d8
   $.ajax({
     url: 'https://www.gmtatennis.org/kp/proxy.php',
     format: "json",
@@ -99,23 +56,10 @@ usgsData.model.prototype = {
   .done(populateSeries)
   .fail(function(jqXHR, error){
     console.log("error sending request");
-<<<<<<< HEAD
-  });
-};
-//create an array to track each site's flowSeries
-var sites = [];
-//create a global variable that will count the number of sites
-var numberOfSites = 0;
-//populate flowSeries object with the results
-var populateSeries = function(results){
-  console.log(results);
-  numberOfSites = results.value.timeSeries.length;
-=======
   })
 },
 populateSeries:function(results){
-  this.numberOfSites=results.value.timeSeries.length,
->>>>>>> 4f50fdca29a6f87bb2262092cca96afbbdad32d8
+  this.numberOfSites=results.value.timeSeries.length;
   //populate flowSeries object for each timeSeries
   for (i=0; i<this.numberOfSites; i++){
     //clear data arrays each round
@@ -128,17 +72,6 @@ populateSeries:function(results){
     $.each(results.value.timeSeries[i].values[0].value, function(i, value){
       //use moment library to format iso timestamp, then push into xData array
       var timestamp = moment(value.dateTime).format("MM/DD HH:mm");
-<<<<<<< HEAD
-      xData.push(timestamp);
-      yData.push(parseInt(value.value));
-      });
-    //flowSeries is the data object that is populated from USGS json
-    makeFlowSeries(yData, xData, gageName);
-   //makeFlowSeries pushes the site's results into the sites array
-  };
-  //once the results for each site have been populated, show the graph of the first site
-  drawGraph();
-=======
       this.xData.push(timestamp);
       this.yData.push(parseInt(value.value));
      });
@@ -149,7 +82,7 @@ populateSeries:function(results){
 },
 //makeFlowSeries pushes the site's results into the sites array
 makeFlowSeries:function(yData, xData, gageName){
-   this.flowSeries = function(yData,xData,gageName){
+   this.flowSeries = {
      labels: xData,
      datasets:[{
       label: gageName,
@@ -164,52 +97,9 @@ makeFlowSeries:function(yData, xData, gageName){
    //call pushFlowSeries method to add new flowSeries to the array of sites
    this.pushFlowSeries();
  }
->>>>>>> 4f50fdca29a6f87bb2262092cca96afbbdad32d8
 };
  
 
-<<<<<<< HEAD
-///////////////////////////////ON LOAD////////////////////////////////
-$(document).ready(function(){
-  //on load, get browser coordinates. all functions through end of populateSeries() are called
-  getLocation();
-  //start with first site
-  n = 0;
-
-  //when left arrow click, reduce the value of n by 1  
-  $(".main").on("click","#leftArrow", function(){
-    //click on arrow to reduce value of i by one
-    if(n>0){
-      n--;
-      drawGraph();
-    }
-    else{
-      n=numberOfSites-1;
-      drawGraph();
-    }
-  });
-
-  $(".main").on("click", "#rightArrow", function(){
-    if (n+1<numberOfSites){
-      n++;
-      drawGraph();
-    }
-    else{
-      n=0;
-      drawGraph();
-    }
-  });
-  //trigger right and left arrow clicks from key events
-  $("body").keydown(function(e){
-    if (e.which === 37){
-      $("#leftArrow").trigger("click");
-    }
-  });
-
-  $("body").keydown(function(e){
-    if (e.which === 39){
-      $("#rightArrow").trigger("click");
-=======
 ///////////////////create the view object type///////////////
 usgsData.view = function(){
   this.hydrograph = document.getElementById('graph').getContext('2d');
@@ -251,8 +141,7 @@ usgsData.view.prototype={
             }]
          }
        }
->>>>>>> 4f50fdca29a6f87bb2262092cca96afbbdad32d8
-    }
+    });
   }
 };
 
