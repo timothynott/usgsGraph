@@ -1,24 +1,9 @@
 
 //[[[[[[[[[[[[[[[[[[[[[[[MODEL]]]]]]]]]]]]]]]]]]]]]]]/////////////////
-var model = function(){};
-//create constructor function for the model. any attributes and methods go here
-model.prototype.constructor = model;
-  
-//add getLocation object that calls writeRequest with the browser coordinates
-var getLocation=function(){
-  //if possible to get location from the browser
-    if (navigator.geolocation) {
-      //return the geolocation object
-      return navigator.geolocation.getCurrentPosition(usgsRequest.writeRequest);
-    }
-    else {
-      x.innerHTML = "Geolocation is not supported by this browser.";
-    }
-};
-  //add usgsRequest object that is an instance of model that writes and sends request to USGS
-var usgsRequest = new model();
-//add the request object as a property of usgsRequest object
-usgsRequest.request = {
+var models= {};
+//add usgsRequest object that is an instance of model that writes and sends request to USGS
+models.usgsRequest = function(){
+    this.request={
       format: "json",
       bBox: "",
       period: "P5D",
@@ -26,11 +11,21 @@ usgsRequest.request = {
       siteType:"ST",
       siteStatus: "active",
       csurl: 'http://waterservices.usgs.gov/nwis/iv/'
+    };
+    this.sites=[];
 };
 //add writeRequest and sendRequest as methods of the usgsRequest object
-usgsRequest.prototype={
+models.usgsRequest.prototype.getLocation=function(){
+    if (navigator.geolocation) {
+      //return the geolocation object with sendRequest as a callback
+      navigator.geolocation.getCurrentPosition(sendRequest);
+    }
+    else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+};
   //writeRequest turns the getCurrentPosition object into a string in the request
-  writeRequest:function(position){
+models.usgsRequest.prototype.writeRequest=function(position){
     console.log(position);
     long=position.coords.longitude.toString().slice(0,11);
     lat=position.coords.latitude.toString().slice(0,9);
@@ -38,28 +33,27 @@ usgsRequest.prototype={
     latExt=(position.coords.latitude+1).toString().slice(0,9);  
     this.request.bBox = long+","+lat+","+longExt+","+latExt;
     return this.request
-  },
+};
   //sendRequest sends the request written by writeRequest
-  sendRequest:function(){
+models.usgsRequest.prototype.sendRequest=function(){
     console.log(request);
     $.ajax({
       url: 'https://www.gmtatennis.org/kp/proxy.php',
       format: "json",
-      data: this.writeRequest(getLocation),
+      //call the writeRequest method and pass along the getLocation() result as a parameter
+      data: this.writeRequest(getLocation()),
       type: "GET"
     })
-    //if it works, callback populateSeries.pushData
-    .done(populateSeries.pushData)
+    //if it works, callback readResult method to put the json data from a site into an array
+    .done(this.readResult)
     .fail(function(jqXHR, error){
       console.log("error sending request");
     })
-  }
+  
 };
 
-var populateSeries = Object.create(model.prototype);
-//add populateSeries model that has properties numberofSites, yData, xData, and gageName.
 //the readResult method pushes the usgsData into yData and xData arrays
-populateSeries.readResult = function(results){
+models.usgsRequest.prototype.readResult = function(results){
   this.numberOfSites=results.value.timeSeries.length;
   //populate flowSeries object for each timeSeries
   for (i=0; i<this.numberOfSites; i++){
@@ -79,27 +73,25 @@ populateSeries.readResult = function(results){
   }
 
 };
-//make sites object
-var sites = new model();
-sites.array = [];
+
 //give sites object an addFlowSeries method that adds each flowSeries to the sites array
-sites.addFlowSeries = function(flowSeries){
-  this.sites.array.push(flowSeries);
+models.usgsRequest.prototype.addFlowSeries = function(flowSeries){
+  this.sites.push(flowSeries);
 };
  
 
 ///////////////////create the view object type///////////////
-view = function(){
+var views= {};
+views.graph = function(){
   this.hydrograph = document.getElementById('graph').getContext('2d');
 };
-view.prototype.constructor = view;
 
 //create the drawGraph method that shows the number of sites and graphs the data
-view.drawGraph=function(){
-    $(".graph h5").html(numberOfSites+" gages near you");
+views.graph.prototype.drawGraph=function(model){
+    $(".graph h5").html(models.numberOfSites+" gages near you");
     var myChart = new Chart(this.hydrograph,{
       type: "line",
-      data: sites.array,
+      data: model.sites,
       options: {
         scaleShowLabels: true,
         responsive: true,
@@ -113,8 +105,8 @@ view.drawGraph=function(){
               },
               time:{
                 parser: true,
-                unit: "hour",
-                unitStepSize: 12,
+                unit: "day",
+                unitStepSize: 0.7,
                 displayFormats: {
                   'hour': 'HH:mm', // 13:00
                   'day': 'DD MMM HH:mm', // 04 June 13:00
@@ -122,7 +114,7 @@ view.drawGraph=function(){
               }
             }],
             yAxes:[{
-              type: "logarithmic",
+              type: "linear",
               scaleLabel:{
                 display: true,
                 labelString: "Flow (cfs)"
@@ -132,14 +124,14 @@ view.drawGraph=function(){
        }//close options
     });//close myChart
 };//close drawGraph
-view.makeFlowSeries=function(){
+views.graph.prototype.makeFlowSeries=function(model){
    this.flowSeries = {
-     labels: populateSeries.xData,
+     labels: model.xData,
       datasets:[{
-        label: populateSeries.gageName,
+        label: model.gageName,
         pointStrokeColor: "#fff",
         strokeColor: "rgba(220,220,220,1)",
-        data: populateSeries.yData,
+        data: models.yData,
         borderColor: '#0F5498',
         pointRadius: 0,
         fill: false
@@ -147,18 +139,21 @@ view.makeFlowSeries=function(){
     }
  };
 
-
+////////////[[[[[[[[[[[  CONTROLLER   ]]]]]]]]]]]
+var controllers = function(model, view){
+  //views.drawGraph.makeFlowSeries from models.usgsRequest xData, yData, and gageName
+  view.makeFlowSeries(model);
+  //models.sites.addFlowSeries from views.drawGraph.makeFlowSeries pushes to array
+  model.addFlowSeries(view.flowSeries);
+  //draw graph from sites array
+  view.drawGraph(model);
+};
   
   ///////------------ON LOAD------------------////////////
 $(document).ready(function(){
-  //controller function to connect the two
-  controller = function(){
-    getLocation();
-    //call populateSeries.readResult when usgsData.sendRequest is done
-    usgsRequest.sendRequest(populateSeries.readResult);
-    //call view.drawGraph when populateSeries is done
-    populateSeries(view.drawGraph);
-  };
+    var model = new models.usgsRequest();
+    var view = new views.graph();
+    var controller = new controllers(model, view);
 });
 
 
