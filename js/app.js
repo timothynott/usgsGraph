@@ -4,20 +4,30 @@ var app = {};
 // controller
 app.controller = function(view, model) {
 	this.view = view;
+	this.view.status("geoseek"); // update status text on page
 	this.model = model;
 	this.model.gotDataCallback = this.view.init.bind(this.view);
 	this.view.model = this.model;
+	
 };
 
 /*app.controller.prototype.viewInit = function (totalSites, sites) {
 	this.view.init(totalSites, sites);
 };*/
 
-app.controller.prototype.run = function(objPosition) { // we'll call this once we have a position
+app.controller.prototype.run = function() { // we'll call this once we have a position
+	var that = this; //maintain scope for use in callback
 	console.log("controller.run", objPosition);
 	// use the position to populate the model with data from the USGS API
 	// When this is done, use the data to populate the view
-	this.model.getData(objPosition, this.view.init);
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(data){
+			that.model.getData(data, that.view.init);
+		});
+	}
+	else {
+		that.view.status("nogeo");
+	}
 };
 
 // model
@@ -49,13 +59,30 @@ app.model.prototype.setData = function(total, sites) {
 };
 
 // view
-app.view = function(previous, next, curr, total) {
+app.view = function(previous, next, curr, total, status) {
 	this.rightArrow = document.getElementById(next);
 	this.leftArrow = document.getElementById(previous);
 	this.textPosition = document.getElementById(curr);
 	this.textTotal = document.getElementById(total);
+	this.status = document.getElementById(status);
 	this.currSite = 0;
 	this.model;
+};
+
+app.view.prototype.statusUpdate = function(which) {
+	var statusText = '';
+	switch(which) {
+		case "geoseek":
+			statusText = "Attempting to get GPS coordinates";
+		break;
+		case "nogeo":
+			statusText = "Geolocation is not supported by this browser.";
+		break;
+		case "sitenav":
+			statusText = (this.currSite+1)+" of "+this.model.totalSites+" gages near you";
+		break;
+	}
+	this.status.innerHTML(statusText);
 };
 
 app.view.prototype.init = function () {

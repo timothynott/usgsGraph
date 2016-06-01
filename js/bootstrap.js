@@ -6,13 +6,6 @@ $(document).ready(function(){
 	var view = new app.view("leftArrow", "rightArrow", "currentGage", "totalGages");
 	var controller = new app.controller(view, model);
 
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(function(data){
-			controller.run(data);
-		});
-	}
-	else {
-		$('#graphContainer').html("Geolocation is not supported by this browser.");
-	}
+	controller.run();
 
 });
