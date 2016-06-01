@@ -176,7 +176,7 @@ app.view.prototype.chartUpdate = function() {
 	            }
 	          }],
 	          yAxes:[{
-	            type: "logarithmic",
+	            type: "linear",
 	            scaleLabel:{
 	              display: true,
 	              labelString: "Flow (cfs)"

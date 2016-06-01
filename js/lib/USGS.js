@@ -18,7 +18,7 @@ USGS.prototype.buildRequestData = function(objPosition) {
 	var latExt= (objPosition.coords.latitude+1).toString().slice(0,9);
 	var requestData = {
 		bBox: long+","+lat+","+longExt+","+latExt,
-		period: "P1D",
+		period: "P5D",
 		parameterCD: "00060",
 		siteType:"ST",
 		siteStatus: "active",
