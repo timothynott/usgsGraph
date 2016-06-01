@@ -16,12 +16,12 @@
 		</div>
 	</header>
 
-	<div class="main">
+	<div id="graphContainer" class="main">
 		<i class="fa fa-angle-left" id="leftArrow" aria-hidden="true"></i>
 		<div class="content">
 			<div class="graph">
 				<h4> </h4>
-				<h5>1 of __ gages near you</h5>
+				<h5><span id="currentGage"></span> of <span id="totalGages"></span> gages near you</h5>
 				<canvas id="graph"></canvas>
 			</div>
 			<div class="social">
@@ -42,12 +42,12 @@
 		</div>
 	</footer>
 
-	<script src="/lib/jquery.min.js"></script>
-	<script src="/lib/USGS.js"></script>
-	<script src="/lib/Chart.2.1.2.min.js"></script>
-	<script src="/lib/moment.2.13.0.min.js"></script>
-	<script src="/models/sites.js"></script>
-	<script src="/views/graph.js"></script>
-	<script src="/controllers/graph.js"></script>
+	
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/lib/USGS.js"></script>
+	<script src="/js/lib/Chart.2.1.2.min.js"></script>
+	<script src="/js/lib/moment.2.13.0.min.js"></script>
+	<script src="/js/bootstrap.js"></script>
+	<script src="/js/app.js"></script>
 </body>
 </html>
