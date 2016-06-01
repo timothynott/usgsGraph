@@ -59,12 +59,14 @@ app.model.prototype.setData = function(total, sites) {
 };
 
 // view
-app.view = function(previous, next, status) {
+app.view = function(previous, next, status, graph) {
 	this.rightArrow = document.getElementById(next);
 	this.leftArrow = document.getElementById(previous);
 	this.status = document.getElementById(status);
+	this.graph = document.getElementById(graph).getContext('2d');
 	this.currSite = 0;
 	this.model;
+	this.chart;
 };
 
 app.view.prototype.statusUpdate = function(which) {
@@ -119,9 +121,68 @@ app.view.prototype.display = function (gageIndex) {
 		console.log("show site", gageIndex);
 		this.currSite = gageIndex;
 		this.statusUpdate('sitenav');
+		this.chartUpdate();
 	}
 	else {
 		console.log("trying to show an illegal site index: " + gageIndex);
 		this.display((gageIndex >= 0) ? 0 : this.model.totalSites - 1); // if out of range, go to front or rear
 	}
+};
+
+app.view.prototype.chartUpdate = function() {
+	var xData = [];
+	var yData = [];
+	this.model.sites[this.currSite].values[0].value.forEach(function(val, i) {
+		xData.push(moment(val.dateTime).format("MM/DD HH:mm"));
+		yData.push(parseInt(val.value));
+	}, this);
+	var flowSeries = {
+		labels:xData,
+		datasets:[{
+			label: this.model.sites[this.currSite].sourceInfo.siteName,
+			pointStrokeColor: "#fff",
+			strokeColor: "rgba(220,220,220,1)",
+			data:yData,
+			borderColor: '#0F5498',
+			pointRadius: 0,
+			fill: false
+		}]
+    };  
+	if(typeof this.chart !== 'undefined') { // need to destroy previous chart object
+		this.chart.destroy();
+	}
+	this.chart = new Chart(this.graph,{
+	    type: "line",
+	    data: flowSeries,
+	    options: {
+	        scaleShowLabels: true,
+	        responsive: true,
+	        maintainAspectRatio: true,
+	        scales:{
+	          xAxes: [{
+	            type: "time",
+	            scaleLabel:{
+	              display: true,
+	              labelString: "Time"
+	            },
+	            time:{
+	              parser: true,
+	              unit: "day",
+	              unitStepSize: 1,
+	              displayFormats: {
+	                'hour': 'HH:mm', // 13:00
+	                'day': 'DD MMM', // 04 June
+	              }
+	            }
+	          }],
+	          yAxes:[{
+	            type: "logarithmic",
+	            scaleLabel:{
+	              display: true,
+	              labelString: "Flow (cfs)"
+	            }
+	          }]
+        	}
+    	}
+  	});
 };
