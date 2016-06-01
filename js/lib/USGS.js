@@ -1,10 +1,10 @@
 var USGS = function() {
-	this.url = "http://waterservices.usgs.gov/nwis/iv/?";
+	this.url = "http://waterservices.usgs.gov/nwis/iv/";
 };
 
 USGS.prototype.get = function(objPosition) {
 	return $.ajax({
-		url: this.url,
+		url: 'https://www.gmtatennis.org/kp/proxy.php',
 		format: "json",
 		data: this.buildRequestData(objPosition),
 		type: "GET",
@@ -23,6 +23,7 @@ USGS.prototype.buildRequestData = function(objPosition) {
 		siteType:"ST",
 		siteStatus: "active",
 		format: "json",
+		csurl: this.url
 	};
 		
 	return requestData;
