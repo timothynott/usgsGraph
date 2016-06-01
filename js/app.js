@@ -4,7 +4,7 @@ var app = {};
 // controller
 app.controller = function(view, model) {
 	this.view = view;
-	this.view.status("geoseek"); // update status text on page
+	this.view.statusUpdate("geoseek"); // update status text on page
 	this.model = model;
 	this.model.gotDataCallback = this.view.init.bind(this.view);
 	this.view.model = this.model;
@@ -17,7 +17,7 @@ app.controller = function(view, model) {
 
 app.controller.prototype.run = function() { // we'll call this once we have a position
 	var that = this; //maintain scope for use in callback
-	console.log("controller.run", objPosition);
+	console.log("controller.run");
 	// use the position to populate the model with data from the USGS API
 	// When this is done, use the data to populate the view
 	if (navigator.geolocation) {
@@ -59,11 +59,9 @@ app.model.prototype.setData = function(total, sites) {
 };
 
 // view
-app.view = function(previous, next, curr, total, status) {
+app.view = function(previous, next, status) {
 	this.rightArrow = document.getElementById(next);
 	this.leftArrow = document.getElementById(previous);
-	this.textPosition = document.getElementById(curr);
-	this.textTotal = document.getElementById(total);
 	this.status = document.getElementById(status);
 	this.currSite = 0;
 	this.model;
@@ -82,7 +80,7 @@ app.view.prototype.statusUpdate = function(which) {
 			statusText = (this.currSite+1)+" of "+this.model.totalSites+" gages near you";
 		break;
 	}
-	this.status.innerHTML(statusText);
+	this.status.innerHTML = statusText;
 };
 
 app.view.prototype.init = function () {
@@ -120,6 +118,7 @@ app.view.prototype.display = function (gageIndex) {
 	if(gageIndex > -1 && gageIndex < this.model.totalSites) {
 		console.log("show site", gageIndex);
 		this.currSite = gageIndex;
+		this.statusUpdate('sitenav');
 	}
 	else {
 		console.log("trying to show an illegal site index: " + gageIndex);

@@ -3,7 +3,7 @@ $(document).ready(function(){
 
 	// instantiate the MVC components
 	var model = new app.model();
-	var view = new app.view("leftArrow", "rightArrow", "currentGage", "totalGages");
+	var view = new app.view("leftArrow", "rightArrow", "statusText");
 	var controller = new app.controller(view, model);
 
 	controller.run();
