@@ -25,24 +25,21 @@
 				<canvas id="graph"></canvas>
 			</div>
 			<div class="social">
-				<i class="fa fa-cloud-download" aria-hidden="true"></i>
-				<i class="fa fa-instagram" aria-hidden="true"></i>
-				<i class="fa fa-twitter" aria-hidden="true"></i>
+				<!--<i id="button_fb" class="fa fa-cloud-download" aria-hidden="true"></i>-->
+				<!--<i class="fa fa-instagram" aria-hidden="true"></i>-->
+				<a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out your nearby hydrographs!" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
 			</div>
 		</div>
 		<i class="fa fa-angle-right" id="rightArrow" aria-hidden="true"></i>
 	</div>
 
 	<footer>
-		<div class="main">
+		
+		<div id="learnMore">
 			<h1>Learn More</h1>
-		</div>
-		<div class="hidden" id="learnMore">
-			<p>Data are from USGS</p>
-		</div>
+			<p>Data are from <a href="http://waterdata.usgs.gov/nwis/rt" target="_blank">USGS</a>.</p>
+		</div>	
 	</footer>
-
-	
 	<script src="/js/lib/jquery.min.js"></script>
 	<script src="/js/lib/USGS.js"></script>
 	<script src="/js/lib/moment.2.13.0.min.js"></script>

@@ -23,32 +23,31 @@ var writeRequest = function(position){
   longExt=(position.coords.longitude+1).toString().slice(0,11);
   latExt=(position.coords.latitude+1).toString().slice(0,9);  
   var request = {
+    format: "json",
     bBox: long+","+lat+","+longExt+","+latExt,
-    period: "P1D",
+    period: "P5D",
     parameterCD: "00060",
     siteType:"ST",
     siteStatus: "active",
-    format: "json",
+    csurl: 'http://waterservices.usgs.gov/nwis/iv/'
   };
   sendRequest(request);
 };
 
-//send the request to USGS
+//send the request to USGS via proxy
 var sendRequest = function(request){
-  //console.log(request);
-  //request carries over
+  //consider experimenting with saving $.ajax as a variable and basing sequence on 
+  //the return of the ajax request
   $.ajax({
-    url: "http://waterservices.usgs.gov/nwis/iv/?",
+    url: 'https://www.gmtatennis.org/kp/proxy.php',
     format: "json",
     data: request,
-    type: "GET",
+    type: "GET"
   })
-  //if json request works, call populateResult() function to save result object
-  //and make it accessible globally
   .done(populateSeries)
   .fail(function(jqXHR, error){
     console.log("error sending request");
-  })
+  });
 };
 //create an array to track each site's flowSeries
 var sites = [];
@@ -56,6 +55,7 @@ var sites = [];
 var numberOfSites = 0;
 //populate flowSeries object with the results
 var populateSeries = function(results){
+  console.log(results);
   numberOfSites = results.value.timeSeries.length;
   //populate flowSeries object for each timeSeries
   for (i=0; i<numberOfSites; i++){
@@ -67,50 +67,16 @@ var populateSeries = function(results){
     gageName=results.value.timeSeries[i].sourceInfo.siteName;
     //go through each x,y pair in that timeseries's results. 
     $.each(results.value.timeSeries[i].values[0].value, function(i, value){
+      //use moment library to format iso timestamp, then push into xData array
       var timestamp = moment(value.dateTime).format("MM/DD HH:mm");
       xData.push(timestamp);
-      var flowValue = parseInt(value.value);
-      yData.push(flowValue);
+      yData.push(parseInt(value.value));
       });
-    console.log(flowSeries);
-    //include options for flowSeries
-    var options = { 
-      scaleShowLabels: true,
-      responsive: true,
-      tooltips:{
-        enabled: false
-      },
-      maintainAspectRatio: false,
-
-      scales:{
-        xAxes: [{
-          type: "time",
-          time:{
-            parser: true
-            
-          }
-        }]
-      }
-    };
     //flowSeries is the data object that is populated from USGS json
-    var flowSeries = {
-      labels:xData,
-      datasets:[{
-          label: gageName,
-          pointStrokeColor: "#fff",
-          strokeColor: "rgba(220,220,220,1)",
-          data:yData,
-          borderColor: '#0F5498',
-          pointRadius: 0,
-          pointHoverRadius: 1
-          
-      }],
-      options: options
-    };
-   
-    sites.push(flowSeries);
+    makeFlowSeries(yData, xData, gageName);
+   //makeFlowSeries pushes the site's results into the sites array
   };
-  //once the site series has been populated, show the graph
+  //once the results for each site have been populated, show the graph of the first site
   drawGraph();
 };
 
@@ -124,13 +90,25 @@ $(document).ready(function(){
   //when left arrow click, reduce the value of n by 1  
   $(".main").on("click","#leftArrow", function(){
     //click on arrow to reduce value of i by one
-    n --;
-    drawGraph();
+    if(n>0){
+      n--;
+      drawGraph();
+    }
+    else{
+      n=numberOfSites-1;
+      drawGraph();
+    }
   });
 
   $(".main").on("click", "#rightArrow", function(){
-    n ++;
-    drawGraph();
+    if (n+1<numberOfSites){
+      n++;
+      drawGraph();
+    }
+    else{
+      n=0;
+      drawGraph();
+    }
   });
   //trigger right and left arrow clicks from key events
   $("body").keydown(function(e){

@@ -10,8 +10,9 @@ body{
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 }
-.hidden{
-	display:none;
+a{
+	text-decoration: none;
+	color: #0F5498;
 }
 
 #title{
@@ -34,21 +35,20 @@ body{
 	margin: 100px 20px;
 }
 .main>i:hover{
-	color: #4C3000;
+	box-shadow: 1px 1px -1px -1px white;
 	cursor: pointer;
 }
-
 .content{
 	border: 1px solid #0F5498;
-	max-width: 700px;
+	width: 70%;
 	background: #D3E8E8;
 	border-radius: 3px;
 	margin: auto;
 }
 .graph{
 	text-align: center;
-	width: 600px;
-	height: 400px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 .graph h4, .graph h5{
 	margin: 0;
@@ -91,14 +91,13 @@ footer{
 	color: #0F5498;
 	position: absolute;
 	width: 100%;
-	
 	clear: both;
 	top: 90%;
 }
 
 #learnMore{
 	color: #0F5498;
-	width: 700px;
+	width: 70%;
 	margin: auto;
 	height: 100%;
 }
